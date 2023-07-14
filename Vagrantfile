@@ -50,7 +50,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2019-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2019_docker"
+    cfg.vm.network "forwarded_port", guest: 2880, host: 2888
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2019-box"
+    cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
       override.vm.network :private_network, ip: "192.168.59.51", gateway: "192.168.56.1"
     end
@@ -96,10 +98,11 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  config.disksize.size = '90GB'
   config.vm.provider "virtualbox" do |v, override|
     v.gui = false
-    v.memory = 2048
-    v.cpus = 2
+    v.memory = 8192
+    v.cpus = 8
     v.linked_clone = true
     # Enable Nested Hardware Virtualisation - requires VirtualBox 6
     v.customize ["modifyvm", :id, "--nested-hw-virt", "on"]
