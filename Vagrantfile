@@ -50,11 +50,19 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2019-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2019_docker"
-    cfg.vm.network "forwarded_port", guest: 2880, host: 2888
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2019-box"
     cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
       override.vm.network :private_network, ip: "192.168.59.51", gateway: "192.168.56.1"
+    end
+  end
+
+  config.vm.define "client-box", autostart: false do |cfg|
+    cfg.vm.box     = "StefanScherer/windows_2019_docker"
+    cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName client-box"
+    cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", args: "-clientToolsOnly", name: "build_tools", privileged: true, reboot: true
+    cfg.vm.provider "virtualbox" do |v, override|
+      override.vm.network :private_network, ip: "192.168.59.53", gateway: "192.168.56.1"
     end
   end
 

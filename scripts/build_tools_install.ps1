@@ -1,3 +1,7 @@
+param (
+    [switch]$clientToolsOnly
+)
+
 function AddToPath([string]$PathToAdd) {
     $currentPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
 
@@ -27,6 +31,33 @@ function Download {
 
     return $FILENAME
 }
+
+cd ${HOME}
+
+# Installer
+Install-WindowsFeature -name Web-Server -IncludeManagementTools
+
+$URL = "https://download.microsoft.com/download/E/9/8/E9849D6A-020E-47E4-9FD0-A023E99B54EB/requestRouter_amd64.msi"
+$FILENAME = Download $URL
+Start-Process -FilePath msiexec.exe -ArgumentList "/i $FILENAME /passive /norestart" -Wait
+rm $FILENAME
+
+$URL = "https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi"
+$FILENAME = Download $URL
+Start-Process -FilePath msiexec.exe -ArgumentList "/i $FILENAME /passive /norestart" -Wait
+rm $FILENAME
+
+# Java
+$URL = "https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe" 
+$FILENAME = Download $URL
+Start-Process -FilePath $FILENAME -ArgumentList "/s ADDLOCAL=ALL" -Wait 
+rm $FILENAME
+
+
+if ($clientToolsOnly) {
+    return
+}
+
 
 # Visual Studio
 $URL = "https://aka.ms/vs/17/release/vs_community.exe"
@@ -72,12 +103,6 @@ Start-Process -FilePath msiexec.exe -ArgumentList "/i $FILENAME /passive INSTALL
 AddToPath "C:\StrawberryPerl\perl\bin\"
 rm $FILENAME
 
-# Java
-$URL = "https://download.oracle.com/java/17/latest/jdk-17_windows-x64_bin.exe" 
-$FILENAME = Download $URL
-Start-Process -FilePath $FILENAME -ArgumentList "/s ADDLOCAL=ALL" -Wait 
-rm $FILENAME
-
 # OpenSSL
 $OPENSSL_VERSION = "1_1_1u"
 $URL = "https://slproweb.com/download/Win64OpenSSL-$OPENSSL_VERSION.msi"
@@ -92,8 +117,7 @@ $FILENAME = Download $URL
 Start-Process -FilePath $FILENAME -ArgumentList "-q -y" -Wait
 rm $FILENAME
 
-# Installer & Inno Setup
-Install-WindowsFeature -name Web-Server -IncludeManagementTools
+# Inno Setup
 
 $URL = "https://jrsoftware.org/download.php/is.exe"
 $FILENAME = Download $URL
@@ -101,17 +125,7 @@ Start-Process -FilePath $FILENAME -ArgumentList "/SILENT /ALLUSERS /NORESTART" -
 AddToPath "C:\Program Files (x86)\Inno Setup 6\"
 rm $FILENAME
 
-$URL = "https://download.microsoft.com/download/E/9/8/E9849D6A-020E-47E4-9FD0-A023E99B54EB/requestRouter_amd64.msi"
+$URL = "https://www.kymoto.org/downloads/ISStudio_Latest.exe"
 $FILENAME = Download $URL
-Start-Process -FilePath msiexec.exe -ArgumentList "/i $FILENAME /passive /norestart" -Wait
+Start-Process -FilePath $FILENAME -ArgumentList "/SILENT /NORESTART" -Wait
 rm $FILENAME
-
-$URL = "https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi"
-$FILENAME = Download $URL
-Start-Process -FilePath msiexec.exe -ArgumentList "/i $FILENAME /passive /norestart" -Wait
-rm $FILENAME
-
-# $URL = "https://www.kymoto.org/downloads/ISStudio_Latest.exe"
-# $FILENAME = Download $URL
-# Start-Process -FilePath $FILENAME -ArgumentList "/SILENT /NORESTART" -Wait
-# rm $FILENAME
