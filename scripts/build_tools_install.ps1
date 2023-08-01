@@ -25,6 +25,10 @@ function Download {
         $FILENAME = $tokens[-1]
     }
 
+    if (Test-Path "$env:TEMP\files\$FILENAME" -PathType Leaf) {
+        return "$env:TEMP\files\$FILENAME"
+    }
+
     Write-Host "$FILENAME Download Started" 
     Invoke-WebRequest -Uri $URL -OutFile $FILENAME 
     Write-Host "$FILENAME Download Finished"
