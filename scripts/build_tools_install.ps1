@@ -108,7 +108,7 @@ AddToPath "C:\StrawberryPerl\perl\bin\"
 rm $FILENAME
 
 # OpenSSL
-$OPENSSL_VERSION = "1_1_1u"
+$OPENSSL_VERSION = "1_1_1v"
 $URL = "https://slproweb.com/download/Win64OpenSSL-$OPENSSL_VERSION.msi"
 $FILENAME = Download $URL
 Start-Process -FilePath msiexec.exe -ArgumentList "/i C:\home\aovcharenko\$FILENAME /passive ADDLOCAL=ALL" -Wait
