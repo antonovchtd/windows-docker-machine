@@ -50,6 +50,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2019-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2019_docker"
+    config.vm.provision "file", source: "files/", destination: "$env:TEMP/files"
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2019-box"
     cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
@@ -59,7 +60,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "client-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2019_docker"
-    config.vm.provision "file", source: "files/", destination: "$env:TEMP/"
+    config.vm.provision "file", source: "files/", destination: "$env:TEMP/files"
     cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", args: "-clientToolsOnly", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
       override.vm.network :private_network, ip: "192.168.59.53", gateway: "192.168.56.1"
@@ -73,7 +74,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2022-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2022_docker"
+    config.vm.provision "file", source: "files/", destination: "$env:TEMP/files"
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2022-box"
+    cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
       override.vm.network :private_network, ip: "192.168.59.52", gateway: "192.168.56.1"
     end
