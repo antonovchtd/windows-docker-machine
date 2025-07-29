@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2019-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2019_docker"
-    config.vm.provision "file", source: "files/", destination: "$env:TEMP/files"
+    config.vm.provision "file", source: "files/", destination: "$env:TEMP"
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2019-box"
     cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "2022-box", autostart: false do |cfg|
     cfg.vm.box     = "StefanScherer/windows_2022_docker"
-    config.vm.provision "file", source: "files/", destination: "$env:TEMP/files"
+    config.vm.provision "file", source: "files/", destination: "$env:TEMP"
     cfg.vm.provision "shell", path: "scripts/create-machine.ps1", args: "-machineHome #{home} -machineName 2022-box"
     cfg.vm.provision "shell", path: "scripts/build_tools_install.ps1", name: "build_tools", privileged: true, reboot: true
     cfg.vm.provider "virtualbox" do |v, override|
@@ -100,7 +100,7 @@ Vagrant.configure("2") do |config|
   ["vmware_fusion", "vmware_workstation"].each do |provider|
     config.vm.provider provider do |v, override|
       v.gui = false
-      v.memory = 2048
+      v.memory = 16384
       v.cpus = 2
       v.enable_vmrun_ip_lookup = false
       v.linked_clone = true
@@ -111,7 +111,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |v, override|
     v.gui = false
-    v.memory = 8192
+    v.memory = 16384
     v.cpus = 8
     v.linked_clone = true
     # Enable Nested Hardware Virtualisation - requires VirtualBox 6
